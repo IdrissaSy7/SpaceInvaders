@@ -16,3 +16,14 @@ div {
   justify-content: center;
   align-items: center;
 }
+
+#gameover {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+
+  color: white;
+  z-index: 10;
+  margin: 15px;
+  font-size: 2.5em;
+}

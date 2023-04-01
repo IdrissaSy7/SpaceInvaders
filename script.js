@@ -1,5 +1,6 @@
 // Constantes qui selectionne l'element canvas et obtient
 // son contexte en 2D qui permet de dessiner des formes
+const gameOver = document.querySelector("#gameover");
 const scoreEl = document.querySelector("#scoreEl");
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
@@ -333,6 +334,7 @@ function animate() {
       invaderProjectile.position.x <= player.position.x + player.width
     ) {
       console.log("perdu");
+      gameOver.innerHTML = "Game Over";
 
       setTimeout(() => {
         player.opacity = 0;
