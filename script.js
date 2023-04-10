@@ -1,14 +1,41 @@
-// Constantes qui selectionne l'element canvas et obtient
-// son contexte en 2D qui permet de dessiner des formes
-const gameOver = document.querySelector("#gameover");
-const scoreEl = document.querySelector("#scoreEl");
+// Constantes
+const replay = document.querySelector("#replaygame");
+const gameover = document.querySelector("#gameover");
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 
-// Définit largeur et hauteur du canvas pour correspondre
-// a la taille du navigateur
-canvas.width = 600;
-canvas.height = window.innerHeight;
+// Variables
+let currentscore = document.querySelector("#currentscore");
+let bestscore = document.querySelector("#bestscore");
+let bestScore = localStorage.getItem("BestScore");
+let score = 0;
+
+// Si le meilleur score n'a jamais été enregistré, initialise-le à 0
+if (!bestScore) {
+  bestScore = 0;
+}
+
+// Affiche le meilleur score si il y en a un
+bestscore.innerHTML = `${bestScore}`;
+
+// Supprimer les scores
+window.addEventListener("load", (e) => {
+  deletescore.onclick = function () {
+    localStorage.clear();
+    bestscore.innerHTML = "0";
+  };
+});
+
+// Rejouer
+window.addEventListener("load", (e) => {
+  replay.onclick = function () {
+    location.reload(true);
+  };
+});
+
+// Définit largeur et hauteur du canvas pour correspondre a la taille du navigateur
+canvas.width = 1024;
+canvas.height = 576;
 
 // Création des étoiles
 let stars = [];
@@ -41,10 +68,8 @@ function drawStars() {
 drawStars();
 
 // Création de la classe player
-
 class Player {
   constructor() {
-    // Vitesse
     this.velocity = {
       x: 0,
       y: 0,
@@ -67,17 +92,17 @@ class Player {
         x: canvas.width / 2 - this.width / 2,
         y: canvas.height - this.height - 30,
       };
-      // ajouter une propriété indiquant que l'image est prête
+      // Ajoute une propriété indiquant que l'image est prête (évite bug)
       this.ready = true;
     };
 
-    // initialiser la propriété à false
+    // Initialise la propriété à false (évite bug)
     this.ready = false;
   }
 
-  // Dessiner le vaisseau sur le canvas avec les propriétes du dessus
+  // Dessine le vaisseau sur le canvas avec les propriétes du dessus
   draw() {
-    // Vérifier que l'image est prête et que la position est définie
+    // Vérifie que l'image est prête et que la position est définie (évite bug)
     if (this.ready && this.position) {
       c.save();
       c.globalAlpha = this.opacity;
@@ -106,7 +131,7 @@ class Player {
   }
 
   update() {
-    // Vérifier que l'image est prête et que la position est définie
+    // Vérifie que l'image est prête et que la position est définie (évite bug)
     if (this.ready && this.position) {
       this.draw();
       this.position.x += this.velocity.x;
@@ -114,9 +139,9 @@ class Player {
   }
 }
 
+// Crée la classe envahisseur
 class Invader {
   constructor({ position }) {
-    // Vitesse
     this.velocity = {
       x: 0,
       y: 0,
@@ -137,17 +162,14 @@ class Invader {
         x: position.x,
         y: position.y,
       };
-      // ajouter une propriété indiquant que l'image est prête
       this.ready = true;
     };
 
-    // initialiser la propriété à false
     this.ready = false;
   }
 
   // Dessiner le vaisseau sur le canvas avec les propriétes du dessus
   draw() {
-    // Vérifier que l'image est prête et que la position est définie
     if (this.ready && this.position) {
       c.drawImage(
         this.image,
@@ -160,7 +182,6 @@ class Invader {
   }
 
   update({ velocity }) {
-    // Vérifier que l'image est prête et que la position est définie
     if (this.ready && this.position) {
       this.draw();
       this.position.x += velocity.x;
@@ -178,13 +199,14 @@ class Invader {
 
         velocity: {
           x: 0,
-          y: 7,
+          y: 7, // Vitesse tir ennemi
         },
       })
     );
   }
 }
 
+// Crée la grille d'ennemi
 class Grid {
   constructor() {
     this.position = {
@@ -193,12 +215,13 @@ class Grid {
     };
 
     this.velocity = {
-      x: 3,
+      x: 5, // Vitesse avancement ennemi
       y: 0,
     };
 
     this.invaders = [];
 
+    // Rangée d'ennemis (aléatoire)
     const columns = Math.floor(Math.random() * 10 + 5);
     const rows = Math.floor(Math.random() * 5 + 2);
 
@@ -209,14 +232,13 @@ class Grid {
         this.invaders.push(
           new Invader({
             position: {
-              x: x * 30,
+              x: x * 35,
               y: y * 30,
             },
           })
         );
       }
     }
-    console.log(this.invaders);
   }
 
   update() {
@@ -232,12 +254,58 @@ class Grid {
   }
 }
 
+function Niveau(nom, columns, rows, vitesse) {
+  this.nom = nom;
+  this.columns = columns;
+  this.rows = rows;
+  this.vitesse = vitesse;
+
+  this.position = {
+    x: 0,
+    y: 0,
+  };
+
+  this.velocity = {
+    x: vitesse, // Vitesse avancement ennemi
+    y: 0,
+  };
+
+  this.invaders = [];
+
+  this.width = columns * 30;
+
+  for (let x = 0; x < columns; x++) {
+    for (let y = 0; y < rows; y++) {
+      this.invaders.push(
+        new Invader({
+          position: {
+            x: x * 35,
+            y: y * 30,
+          },
+        })
+      );
+    }
+  }
+
+  this.update = function () {
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
+
+    this.velocity.y = 0;
+
+    if (this.position.x + this.width >= canvas.width || this.position.x <= 0) {
+      this.velocity.x = -this.velocity.x;
+      this.velocity.y = 30;
+    }
+  };
+}
+
+// Tirs du joueur
 class projectile {
   constructor({ position, velocity }) {
     this.position = position;
     this.velocity = velocity;
-
-    this.radius = 4;
+    this.radius = 4; // Taille du tir joueur
   }
 
   draw() {
@@ -255,11 +323,12 @@ class projectile {
   }
 }
 
+// Tirs ennemis
 class InvaderProjectile {
   constructor({ position, velocity }) {
     this.position = position;
     this.velocity = velocity;
-    this.width = 3;
+    this.width = 4;
     this.height = 10;
   }
 
@@ -275,15 +344,11 @@ class InvaderProjectile {
   }
 }
 
-// Initialise le player
+// Constantes
 const player = new Player();
-
 const projectiles = [];
-
 const grids = [];
-
 const invaderProjectiles = [];
-
 const keys = {
   q: {
     pressed: false,
@@ -296,6 +361,7 @@ const keys = {
   },
 };
 
+// Variables
 let frames = 0;
 let randomInterval = Math.floor(Math.random() * 500 + 500);
 let game = {
@@ -303,12 +369,7 @@ let game = {
   active: true,
 };
 
-let score = 0;
-
-console.log(randomInterval);
-
 // Fonction animate en boucle qui affiche le vaisseau
-// Dessine un rectangle noir sur tout le canvas
 function animate() {
   if (!game.active) return;
   requestAnimationFrame(animate);
@@ -326,6 +387,7 @@ function animate() {
       invaderProjectile.update();
     }
 
+    // Si le joueur se fait toucher (et que la partie prend fin)
     if (
       invaderProjectile.position.y + invaderProjectile.height >=
         player.position.y &&
@@ -333,17 +395,31 @@ function animate() {
         player.position.x &&
       invaderProjectile.position.x <= player.position.x + player.width
     ) {
-      console.log("perdu");
-      gameOver.innerHTML = "Game Over";
-
+      // Opacité du joueur à 0
       setTimeout(() => {
         player.opacity = 0;
         game.over = true;
       }, 0);
 
+      // Fin de la partie 800ms après
       setTimeout(() => {
         game.active = false;
       }, 800);
+
+      // Affiche le texte suivant
+      gameover.innerHTML = "Game Over";
+
+      // Bouton replay
+      replay.innerHTML = `<p class="replay">Rejouer</p>`;
+
+      // Stocke le score actuel et le meilleur score
+      localStorage.setItem("Score", currentscore.innerText);
+
+      // Met à jour le meilleur score si le score actuel est supérieur
+      if (+currentscore.innerText > +bestScore) {
+        localStorage.setItem("BestScore", currentscore.innerText);
+        console.log("meilleur score");
+      }
     }
   });
 
@@ -359,13 +435,16 @@ function animate() {
 
   grids.forEach((grid, gridIndex) => {
     grid.update();
-
     // Apparition des projectiles
+    // Un tir tout les 1s/100 frames
+    // Difficulté variable
     if (frames % 100 === 0 && grid.invaders.length > 0) {
       grid.invaders[Math.floor(Math.random() * grid.invaders.length)].shoot(
         invaderProjectiles
       );
     }
+
+    console.log(frames);
 
     let enemiesToRemove = [];
     let projectilesToRemove = [];
@@ -389,10 +468,11 @@ function animate() {
       });
     });
 
+    // Score
     enemiesToRemove.forEach((index) => {
       grid.invaders.splice(index, 1);
       score += 100;
-      scoreEl.innerHTML = score;
+      currentscore.innerHTML = score;
     });
 
     projectilesToRemove.forEach((index) => {
@@ -411,6 +491,8 @@ function animate() {
     }
   });
 
+  // Déplacement du joueur (vitesse et rotation)
+  // Q et D sont les touches utilisées
   if (keys.q.pressed && player.position.x >= 0) {
     player.velocity.x = -8;
     player.rotation = -0.1;
@@ -430,32 +512,28 @@ function animate() {
     grids.push(new Grid());
     randomInterval = Math.floor(Math.random() * 500 + 500);
     frames = 0;
-    console.log(randomInterval);
   }
 
   frames++;
-  // console.log(frames);
 }
 
 animate();
 
-// Mouvement du joueur
+// Commandes du joueur
 addEventListener("keydown", ({ key }) => {
   if (game.over) return;
 
   switch (key) {
+    // Mouvement à gauche
     case "q":
-      // console.log("left");
-      player.velocity.x = -5;
       keys.q.pressed = true;
       break;
+    // Mouvement à droite
     case "d":
-      // console.log("right");
       keys.d.pressed = true;
-
       break;
+    // Tirs
     case " ":
-      // console.log("space");
       projectiles.push(
         new projectile({
           position: {
@@ -464,7 +542,7 @@ addEventListener("keydown", ({ key }) => {
           },
           velocity: {
             x: 0,
-            y: -10,
+            y: -10, // Vitesse du tir du joueur
           },
         })
       );
@@ -475,17 +553,13 @@ addEventListener("keydown", ({ key }) => {
 addEventListener("keyup", ({ key }) => {
   switch (key) {
     case "q":
-      // console.log("left");
-      // player.velocity.x = -5;
       keys.q.pressed = false;
       break;
     case "d":
-      // console.log("right");
       keys.d.pressed = false;
 
       break;
     case " ":
-      // console.log("space");
       break;
   }
 });

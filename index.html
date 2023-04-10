@@ -3,14 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="style.css" />
-
     <title>Space Invaders</title>
   </head>
   <body>
-    <p class="score"><span>Score : </span> <span id="scoreEl">0</span></p>
     <div>
-      <span id="gameover"></span>
-      <canvas id="myCanvas"></canvas>
+      <div class="leftcontent">
+        <p class="score">
+          <span>Score : </span><span id="currentscore">0</span>
+        </p>
+        <p class="bestscore">
+          <span>Meilleur Score : </span><span id="bestscore">0</span>
+        </p>
+        <p class="delete"></p>
+        <p id="deletescore">Effacer le score</p>
+      </div>
+      <div>
+        <span id="gameover"></span>
+        <span id="replaygame"></span>
+        <canvas id="myCanvas"></canvas>
+      </div>
     </div>
     <script src="script.js"></script>
   </body>

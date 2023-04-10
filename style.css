@@ -1,29 +1,63 @@
 body {
   margin: 0;
-  background-color: rgb(17, 17, 17);
+  background-color: black;
 }
 
-.score {
-  position: fixed;
+.leftcontent {
+  position: absolute;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.score,
+.bestscore,
+#deletescore {
   z-index: 10;
   color: white;
-  margin: 15px;
+  margin: 5px;
   font-size: 1.5em;
+}
+
+#deletescore:hover {
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 div {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 #gameover {
   position: absolute;
   margin-left: auto;
   margin-right: auto;
-
   color: white;
   z-index: 10;
-  margin: 15px;
   font-size: 2.5em;
+}
+
+#replaygame {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  bottom: 170px;
+  z-index: 10;
+}
+
+.replay {
+  border: none;
+  background-color: black;
+  color: white;
+  font-size: 1.7em;
+  cursor: pointer;
+}
+
+.replay:hover {
+  text-decoration: underline;
 }
