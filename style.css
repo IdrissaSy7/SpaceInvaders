@@ -33,6 +33,10 @@ body {
   font-size: 1.5em;
 }
 
+.instructions {
+  font-size: 0.7em;
+}
+
 #deletescore {
   cursor: pointer;
 }
