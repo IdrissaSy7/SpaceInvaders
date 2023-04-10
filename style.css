@@ -48,16 +48,21 @@ div {
   margin-right: auto;
   bottom: 170px;
   z-index: 10;
+  background-color: rgba(128, 128, 128, 0.116);
+  border-radius: 25px;
+  width: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+#replaygame:hover {
+  background-color: rgba(128, 128, 128, 0.319);
 }
 
 .replay {
   border: none;
-  background-color: black;
   color: white;
   font-size: 1.7em;
-  cursor: pointer;
-}
-
-.replay:hover {
-  text-decoration: underline;
 }

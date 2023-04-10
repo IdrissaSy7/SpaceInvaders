@@ -39,12 +39,12 @@ canvas.height = 576;
 
 // Création des étoiles
 let stars = [];
-const NUM_STARS = 30;
+const NUM_STARS = 50;
 for (let i = 0; i < NUM_STARS; i++) {
   let x = Math.random() * canvas.width;
   let y = Math.random() * canvas.height;
   let size = Math.random() * 3;
-  let speed = Math.random() * 3 + 1;
+  let speed = Math.random() * 10 + 1;
   stars.push({ x, y, size, speed });
 }
 
@@ -215,7 +215,7 @@ class Grid {
     };
 
     this.velocity = {
-      x: 5, // Vitesse avancement ennemi
+      x: 8, // Vitesse deplacement ennemi
       y: 0,
     };
 
@@ -494,14 +494,14 @@ function animate() {
   // Déplacement du joueur (vitesse et rotation)
   // Q et D sont les touches utilisées
   if (keys.q.pressed && player.position.x >= 0) {
-    player.velocity.x = -8;
-    player.rotation = -0.1;
+    player.velocity.x = -13; // Vitesse déplacement joueur
+    player.rotation = -0.2;
   } else if (
     keys.d.pressed &&
     player.position.x + player.width < canvas.width
   ) {
-    player.velocity.x = 8;
-    player.rotation = 0.1;
+    player.velocity.x = 13; // Vitesse déplacement joueur
+    player.rotation = 0.2;
   } else {
     player.velocity.x = 0;
     player.rotation = 0;
