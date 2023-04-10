@@ -4,16 +4,16 @@ body {
 }
 
 .leftdiv {
-  position: absolute;
+  position: fixed;
   left: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   height: 90vh;
+  z-index: 10;
 }
 
 .leftcontent {
-  z-index: 10;
   color: white;
   margin: 5px;
   font-size: 1.5em;
