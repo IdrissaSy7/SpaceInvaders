@@ -7,17 +7,28 @@
   </head>
   <body>
     <div>
-      <div class="leftcontent">
-        <p class="score">
-          <span>Score : </span><span id="currentscore">0</span>
-        </p>
-        <p class="bestscore">
-          <span>Meilleur Score : </span><span id="bestscore">0</span>
-        </p>
-        <p class="delete"></p>
-        <p id="deletescore">Effacer le score</p>
+      <div class="leftdiv">
+        <div class="scorecontent">
+          <p class="leftcontent">
+            <span>Score : </span><span id="currentscore">0</span>
+          </p>
+          <p class="leftcontent">
+            <span>Meilleur Score : </span><span id="bestscore">0</span>
+          </p>
+          <p class="leftcontent" id="deletescore">Effacer le score</p>
+        </div>
+        <div class="levelcontent">
+          <p class="leftcontent">Niveau : <span id="currentLevel"></span></p>
+        </div>
+        <div class="paliercontent">
+          <p class="leftcontent">Palier de niveau :</p>
+          <p class="leftcontent">Niveau 2 : <span id="palier2"></span></p>
+          <p class="leftcontent">Niveau 3 : <span id="palier3"></span></p>
+          <p class="leftcontent">Niveau 4 : <span id="palier4"></span></p>
+          <p class="leftcontent">Niveau 5 : <span id="palier5"></span></p>
+        </div>
       </div>
-      <div>
+      <div class="divgame">
         <span id="gameover"></span>
         <span id="replaygame"></span>
         <canvas id="myCanvas"></canvas>

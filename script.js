@@ -9,6 +9,106 @@ let currentscore = document.querySelector("#currentscore");
 let bestscore = document.querySelector("#bestscore");
 let bestScore = localStorage.getItem("BestScore");
 let score = 0;
+let velocityPlayer = 7; // Vitesse déplacement joueur
+let velocityEnnemi = 3; // Vitesse déplacement de base ennemi
+let fireFrequency = 200; // Fréquence tir de base ennemi
+let ennemiFireVelocity = 4; // Vitesse tir de base ennemi
+let currentLevel = 1; // Niveau de base
+let levelCurrent = document.querySelector("#currentLevel");
+let scoreLevel1 = 0;
+let multiplier = 5000;
+let scoreLevel2 = scoreLevel1 + multiplier;
+let scoreLevel3 = scoreLevel2 + multiplier;
+let scoreLevel4 = scoreLevel3 + multiplier;
+let scoreLevel5 = scoreLevel4 + multiplier;
+let palier1 = document.querySelector("#palier1");
+let palier2 = document.querySelector("#palier2");
+let palier3 = document.querySelector("#palier3");
+let palier4 = document.querySelector("#palier4");
+let palier5 = document.querySelector("#palier5");
+
+palier2.innerHTML = scoreLevel2;
+palier3.innerHTML = scoreLevel3;
+palier4.innerHTML = scoreLevel4;
+palier5.innerHTML = scoreLevel5;
+
+console.log(scoreLevel1);
+console.log(scoreLevel2);
+console.log(scoreLevel3);
+console.log(scoreLevel4);
+console.log(scoreLevel5);
+
+// Définit largeur et hauteur du canvas pour correspondre a la taille du navigateur
+canvas.width = 1024;
+canvas.height = 576;
+
+// Fonctions des 5 niveaux
+function levelOne() {
+  velocityEnnemi = 3;
+  fireFrequency = 200;
+  ennemiFireVelocity = 4;
+  currentLevel = 1;
+  levelCurrent.innerText = currentLevel;
+}
+
+function levelTwo() {
+  velocityEnnemi = 4;
+  fireFrequency = 150;
+  ennemiFireVelocity = 5;
+  currentLevel = 2;
+  levelCurrent.innerText = currentLevel;
+}
+
+function levelThree() {
+  velocityEnnemi = 5;
+  fireFrequency = 100;
+  ennemiFireVelocity = 6;
+  currentLevel = 3;
+  levelCurrent.innerText = currentLevel;
+}
+
+function levelFour() {
+  velocityEnnemi = 6;
+  fireFrequency = 50;
+  ennemiFireVelocity = 7;
+  currentLevel = 4;
+  levelCurrent.innerText = currentLevel;
+}
+
+function levelFive() {
+  velocityEnnemi = 7;
+  fireFrequency = 25;
+  ennemiFireVelocity = 8;
+  currentLevel = 5;
+  levelCurrent.innerText = currentLevel;
+}
+
+// Augmentation du niveau en fonction du score
+function checkLevel() {
+  if (score >= scoreLevel1 && score < scoreLevel2) {
+    levelOne();
+    console.log("niveau 1");
+  }
+  if (score >= scoreLevel2 && score < scoreLevel3) {
+    levelTwo();
+    console.log("niveau 2");
+  }
+  if (score >= scoreLevel3 && score < scoreLevel4) {
+    levelThree();
+    console.log("niveau 3");
+  }
+  if (score >= scoreLevel4 && score < scoreLevel5) {
+    levelFour();
+    console.log("niveau 4");
+  }
+  if (score >= scoreLevel5) {
+    levelFive();
+    console.log("niveau 5");
+  }
+}
+
+// Modification du niveau sur la page HTML
+levelCurrent.innerText = currentLevel;
 
 // Si le meilleur score n'a jamais été enregistré, initialise-le à 0
 if (!bestScore) {
@@ -19,23 +119,23 @@ if (!bestScore) {
 bestscore.innerHTML = `${bestScore}`;
 
 // Supprimer les scores
+function deleteScores() {
+  localStorage.clear();
+  bestscore.innerHTML = "0";
+}
+
 window.addEventListener("load", (e) => {
-  deletescore.onclick = function () {
-    localStorage.clear();
-    bestscore.innerHTML = "0";
-  };
+  deletescore.onclick = deleteScores;
 });
 
-// Rejouer
-window.addEventListener("load", (e) => {
-  replay.onclick = function () {
-    location.reload(true);
-  };
-});
+// Recommencer la partie
+function restartGame() {
+  location.reload(true);
+}
 
-// Définit largeur et hauteur du canvas pour correspondre a la taille du navigateur
-canvas.width = 1024;
-canvas.height = 576;
+window.addEventListener("load", (e) => {
+  replay.onclick = restartGame;
+});
 
 // Création des étoiles
 let stars = [];
@@ -199,7 +299,7 @@ class Invader {
 
         velocity: {
           x: 0,
-          y: 7, // Vitesse tir ennemi
+          y: ennemiFireVelocity, // Vitesse tir ennemi
         },
       })
     );
@@ -215,7 +315,7 @@ class Grid {
     };
 
     this.velocity = {
-      x: 8, // Vitesse deplacement ennemi
+      x: velocityEnnemi, // Vitesse déplacement ennemi
       y: 0,
     };
 
@@ -252,52 +352,6 @@ class Grid {
       this.velocity.y = 30;
     }
   }
-}
-
-function Niveau(nom, columns, rows, vitesse) {
-  this.nom = nom;
-  this.columns = columns;
-  this.rows = rows;
-  this.vitesse = vitesse;
-
-  this.position = {
-    x: 0,
-    y: 0,
-  };
-
-  this.velocity = {
-    x: vitesse, // Vitesse avancement ennemi
-    y: 0,
-  };
-
-  this.invaders = [];
-
-  this.width = columns * 30;
-
-  for (let x = 0; x < columns; x++) {
-    for (let y = 0; y < rows; y++) {
-      this.invaders.push(
-        new Invader({
-          position: {
-            x: x * 35,
-            y: y * 30,
-          },
-        })
-      );
-    }
-  }
-
-  this.update = function () {
-    this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y;
-
-    this.velocity.y = 0;
-
-    if (this.position.x + this.width >= canvas.width || this.position.x <= 0) {
-      this.velocity.x = -this.velocity.x;
-      this.velocity.y = 30;
-    }
-  };
 }
 
 // Tirs du joueur
@@ -418,7 +472,6 @@ function animate() {
       // Met à jour le meilleur score si le score actuel est supérieur
       if (+currentscore.innerText > +bestScore) {
         localStorage.setItem("BestScore", currentscore.innerText);
-        console.log("meilleur score");
       }
     }
   });
@@ -438,13 +491,13 @@ function animate() {
     // Apparition des projectiles
     // Un tir tout les 1s/100 frames
     // Difficulté variable
-    if (frames % 100 === 0 && grid.invaders.length > 0) {
+    if (frames % fireFrequency === 0 && grid.invaders.length > 0) {
       grid.invaders[Math.floor(Math.random() * grid.invaders.length)].shoot(
         invaderProjectiles
       );
     }
 
-    console.log(frames);
+    // console.log(frames);
 
     let enemiesToRemove = [];
     let projectilesToRemove = [];
@@ -472,6 +525,7 @@ function animate() {
     enemiesToRemove.forEach((index) => {
       grid.invaders.splice(index, 1);
       score += 100;
+      checkLevel();
       currentscore.innerHTML = score;
     });
 
@@ -494,13 +548,13 @@ function animate() {
   // Déplacement du joueur (vitesse et rotation)
   // Q et D sont les touches utilisées
   if (keys.q.pressed && player.position.x >= 0) {
-    player.velocity.x = -13; // Vitesse déplacement joueur
+    player.velocity.x = -velocityPlayer; // Vitesse déplacement joueur
     player.rotation = -0.2;
   } else if (
     keys.d.pressed &&
     player.position.x + player.width < canvas.width
   ) {
-    player.velocity.x = 13; // Vitesse déplacement joueur
+    player.velocity.x = velocityPlayer; // Vitesse déplacement joueur
     player.rotation = 0.2;
   } else {
     player.velocity.x = 0;
