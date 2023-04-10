@@ -29,6 +29,10 @@ body {
   margin-left: 15px;
 }
 
+.levelcontent {
+  font-size: 1.5em;
+}
+
 #deletescore {
   cursor: pointer;
 }
