@@ -466,12 +466,13 @@ function animate() {
       // Bouton replay
       replay.innerHTML = `<p class="replay">Rejouer</p>`;
 
-      // Stocke le score actuel et le meilleur score
+      // Stocke le score actuel
       localStorage.setItem("Score", currentscore.innerText);
 
       // Met à jour le meilleur score si le score actuel est supérieur
       if (+currentscore.innerText > +bestScore) {
         localStorage.setItem("BestScore", currentscore.innerText);
+        bestscore.innerHTML = currentscore.innerText;
       }
     }
   });
