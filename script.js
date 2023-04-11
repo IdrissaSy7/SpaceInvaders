@@ -35,7 +35,7 @@ palier5.innerHTML = scoreLevel5;
 // Définit largeur et hauteur du canvas
 canvas.width = 1024;
 // canvas.height = 576;
-canvas.height = 650;
+canvas.height = 670;
 
 // Fonctions des 5 niveaux
 function levelOne() {
