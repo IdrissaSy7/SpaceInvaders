@@ -10,7 +10,7 @@ let bestscore = document.querySelector("#bestscore");
 let bestScore = localStorage.getItem("BestScore");
 let score = 0;
 let velocityPlayer = 7; // Vitesse déplacement joueur
-let velocityEnnemi = 3; // Vitesse déplacement de base ennemi
+let velocityEnnemi = 4; // Vitesse déplacement de base ennemi
 let fireFrequency = 200; // Fréquence tir de base ennemi
 let ennemiFireVelocity = 4; // Vitesse tir de base ennemi
 let currentLevel = 1; // Niveau de base
@@ -32,19 +32,13 @@ palier3.innerHTML = scoreLevel3;
 palier4.innerHTML = scoreLevel4;
 palier5.innerHTML = scoreLevel5;
 
-console.log(scoreLevel1);
-console.log(scoreLevel2);
-console.log(scoreLevel3);
-console.log(scoreLevel4);
-console.log(scoreLevel5);
-
-// Définit largeur et hauteur du canvas pour correspondre a la taille du navigateur
+// Définit largeur et hauteur du canvas
 canvas.width = 1024;
 canvas.height = 576;
 
 // Fonctions des 5 niveaux
 function levelOne() {
-  velocityEnnemi = 3;
+  velocityEnnemi = 4;
   fireFrequency = 200;
   ennemiFireVelocity = 4;
   currentLevel = 1;
@@ -60,7 +54,7 @@ function levelTwo() {
 }
 
 function levelThree() {
-  velocityEnnemi = 5;
+  velocityEnnemi = 4;
   fireFrequency = 100;
   ennemiFireVelocity = 6;
   currentLevel = 3;
@@ -68,7 +62,7 @@ function levelThree() {
 }
 
 function levelFour() {
-  velocityEnnemi = 6;
+  velocityEnnemi = 4;
   fireFrequency = 50;
   ennemiFireVelocity = 7;
   currentLevel = 4;
@@ -76,7 +70,7 @@ function levelFour() {
 }
 
 function levelFive() {
-  velocityEnnemi = 7;
+  velocityEnnemi = 4;
   fireFrequency = 25;
   ennemiFireVelocity = 8;
   currentLevel = 5;
@@ -87,23 +81,18 @@ function levelFive() {
 function checkLevel() {
   if (score >= scoreLevel1 && score < scoreLevel2) {
     levelOne();
-    console.log("niveau 1");
   }
   if (score >= scoreLevel2 && score < scoreLevel3) {
     levelTwo();
-    console.log("niveau 2");
   }
   if (score >= scoreLevel3 && score < scoreLevel4) {
     levelThree();
-    console.log("niveau 3");
   }
   if (score >= scoreLevel4 && score < scoreLevel5) {
     levelFour();
-    console.log("niveau 4");
   }
   if (score >= scoreLevel5) {
     levelFive();
-    console.log("niveau 5");
   }
 }
 
@@ -112,7 +101,7 @@ levelCurrent.innerText = currentLevel;
 
 // Si le meilleur score n'a jamais été enregistré, initialise-le à 0
 if (!bestScore) {
-  bestScore = 0;
+  bestScore = `0`;
 }
 
 // Affiche le meilleur score si il y en a un
@@ -144,7 +133,7 @@ for (let i = 0; i < NUM_STARS; i++) {
   let x = Math.random() * canvas.width;
   let y = Math.random() * canvas.height;
   let size = Math.random() * 3;
-  let speed = Math.random() * 10 + 1;
+  let speed = Math.random() * 5 + 1;
   stars.push({ x, y, size, speed });
 }
 
@@ -359,7 +348,7 @@ class projectile {
   constructor({ position, velocity }) {
     this.position = position;
     this.velocity = velocity;
-    this.radius = 4; // Taille du tir joueur
+    this.radius = 3.5; // Taille du tir joueur
   }
 
   draw() {
@@ -417,7 +406,6 @@ const keys = {
 
 // Variables
 let frames = 0;
-let randomInterval = Math.floor(Math.random() * 500 + 500);
 let game = {
   over: false,
   active: true,
@@ -490,15 +478,11 @@ function animate() {
   grids.forEach((grid, gridIndex) => {
     grid.update();
     // Apparition des projectiles
-    // Un tir tout les 1s/100 frames
-    // Difficulté variable
     if (frames % fireFrequency === 0 && grid.invaders.length > 0) {
       grid.invaders[Math.floor(Math.random() * grid.invaders.length)].shoot(
         invaderProjectiles
       );
     }
-
-    // console.log(frames);
 
     let enemiesToRemove = [];
     let projectilesToRemove = [];
@@ -563,10 +547,9 @@ function animate() {
   }
 
   // Apparition de nouveau monstres
-  if (frames % randomInterval === 0) {
-    grids.push(new Grid());
-    randomInterval = Math.floor(Math.random() * 500 + 500);
+  if (grids.every((grid) => grid.invaders.length === 0)) {
     frames = 0;
+    grids.push(new Grid());
   }
 
   frames++;
